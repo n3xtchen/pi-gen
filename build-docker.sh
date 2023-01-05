@@ -45,7 +45,7 @@ else
 	source ${CONFIG_FILE}
 fi
 
-CONTAINER_NAME=${CONTAINER_NAME:-pigen_work}
+CONTAINER_NAME=${CONTAINER_NAME:-pigencn_work}
 CONTINUE=${CONTINUE:-0}
 PRESERVE_CONTAINER=${PRESERVE_CONTAINER:-0}
 PIGEN_DOCKER_OPTS=${PIGEN_DOCKER_OPTS:-""}
@@ -75,7 +75,7 @@ fi
 # Modify original build-options to allow config file to be mounted in the docker container
 BUILD_OPTS="$(echo "${BUILD_OPTS:-}" | sed -E 's@\-c\s?([^ ]+)@-c /config@')"
 
-${DOCKER} build --build-arg BASE_IMAGE=debian:bullseye -t pi-gen "${DIR}"
+${DOCKER} build --build-arg BASE_IMAGE=debian:bullseye -t pi-gen-cn "${DIR}"
 
 if [ "${CONTAINER_EXISTS}" != "" ]; then
 	trap 'echo "got CTRL+C... please wait 5s" && ${DOCKER} stop -t 5 ${CONTAINER_NAME}_cont' SIGINT SIGTERM
@@ -87,7 +87,7 @@ if [ "${CONTAINER_EXISTS}" != "" ]; then
 		--volume "${CONFIG_FILE}":/config:ro \
 		-e "GIT_HASH=${GIT_HASH}" \
 		--volumes-from="${CONTAINER_NAME}" --name "${CONTAINER_NAME}_cont" \
-		pi-gen \
+		pi-gen-cn \
 		bash -e -o pipefail -c "dpkg-reconfigure qemu-user-static &&
 	# binfmt_misc is sometimes not mounted with debian bullseye image
 	(mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc || true) &&
@@ -103,7 +103,7 @@ else
 		${PIGEN_DOCKER_OPTS} \
 		--volume "${CONFIG_FILE}":/config:ro \
 		-e "GIT_HASH=${GIT_HASH}" \
-		pi-gen \
+		pi-gen-cn \
 		bash -e -o pipefail -c "dpkg-reconfigure qemu-user-static &&
 	# binfmt_misc is sometimes not mounted with debian bullseye image
 	(mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc || true) &&
