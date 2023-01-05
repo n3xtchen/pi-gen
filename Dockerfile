@@ -3,6 +3,7 @@ FROM ${BASE_IMAGE}
 
 ENV DEBIAN_FRONTEND noninteractive
 
+RUN sed -i 's|deb.debian.org|ftp.cn.debian.org|g' /etc/apt/sources.list
 RUN apt-get -y update && \
     apt-get -y install --no-install-recommends \
         git vim parted \
